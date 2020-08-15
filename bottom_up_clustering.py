@@ -30,7 +30,6 @@ warnings.filterwarnings('ignore')
 from matplotlib.backends.backend_pdf import PdfPages
 pp = PdfPages('dendo_vis.pdf')
 
-
 def measure_cluster_accuracy(hier, data):
     """
     Generate score for Hierarchy clusters.
@@ -51,7 +50,6 @@ def save_dendogram(hier, le_name_mapping, cat):
 def get_ideal_clustersize_category(data, cat):
     clusters = [i+2 for i in range(data.shape[1]-2)]
     print('\n', cat, '  ', '*'*10)
-
     clusters_sorted_by_values = dict()
     for cluster in clusters:
         model = AgglomerativeClustering(linkage='average', n_clusters=cluster, affinity='euclidean')
@@ -61,7 +59,6 @@ def get_ideal_clustersize_category(data, cat):
 
     for key, value in sorted(clusters_sorted_by_values.iteritems(), key=lambda (k,v): (v,k), reverse=True):
         print("For cluster =", key, ". The average silhouette_score is :", value)
-
 
 # Pull data # --------
 engine = sqlalchemy.create_engine('oracle+cx_oracle://[hitesh]:@localhost')
@@ -86,7 +83,6 @@ for cat in np.sort(raw_data['item_group'].unique()):
 
     le_name_mapping = list(zip(le.classes_, le.transform(le.classes_)))
     data = data.pivot(index='first_group', columns='second_group', values='pct_overlap')
-
     # replace NaNs for self group joins
     data.fillna(100, inplace=True)
 
@@ -94,7 +90,6 @@ for cat in np.sort(raw_data['item_group'].unique()):
     measure_cluster_accuracy(hier, data)
     save_dendogram(hier, le_name_mapping, cat)
     get_ideal_clustersize_category(data, cat)
-
 
 pp.close()
 os.remove('temp.jpg')
